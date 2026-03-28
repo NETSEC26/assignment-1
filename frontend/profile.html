@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OIDC Demo — Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      padding: 40px 16px 80px;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; }
+
+    /* ── Top Bar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .topbar a {
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .topbar a:hover { color: #79c0ff; }
+
+    .provider-badge {
+      background: linear-gradient(135deg, #1a3a6b, #0077ff22);
+      border: 1px solid #0077ff55;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #58a6ff;
+      padding: 4px 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Hero Card ── */
+    .hero-card {
+      background: linear-gradient(135deg, #161b22, #1c2230);
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0077ff, #7b5ea7);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 4px #0077ff33;
+    }
+
+    .user-info h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+    .user-info .email { color: #8b949e; font-size: 0.95rem; margin-bottom: 8px; }
+    .user-info .sub  { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #484f58; word-break: break-all; }
+
+    .success-chip {
+      margin-left: auto;
+      background: #0d2b0d;
+      border: 1px solid #3fb95055;
+      border-radius: 10px;
+      padding: 10px 18px;
+      color: #3fb950;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* ── Section Cards ── */
+    .section {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid #21262d;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .section-header:hover { background: #1c2230; }
+
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #c9d1d9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #58a6ff;
+    }
+
+    .chevron {
+      color: #484f58;
+      transition: transform 0.2s;
+      font-size: 0.75rem;
+    }
+    .section.open .chevron { transform: rotate(180deg); }
+
+    .section-body {
+      display: none;
+      padding: 20px 24px;
+    }
+    .section.open .section-body { display: block; }
+
+    /* ── Code Blocks ── */
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: #c9d1d9;
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* JWT token display with copy button */
+    .token-wrap {
+      position: relative;
+    }
+
+    .token-raw {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      line-height: 1.6;
+      color: #8b949e;
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      padding: 14px 48px 14px 14px;
+      overflow-x: auto;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #8b949e;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .copy-btn:hover { background: #30363d; color: #e6edf3; }
+    .copy-btn.copied { color: #3fb950; border-color: #3fb950; }
+
+    /* JWT.io link */
+    .jwtio-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      color: #d2a679;
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid #d2a67944;
+      border-radius: 6px;
+      padding: 6px 14px;
+      background: #1a1408;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .jwtio-link:hover { background: #231d0e; border-color: #d2a679; }
+
+    /* ── Actions ── */
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 10px 22px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0077ff, #0055cc);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,119,255,0.3);
+    }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    .btn-danger {
+      background: #21262d;
+      color: #f85149;
+      border: 1px solid #f8514944;
+    }
+    .btn-danger:hover { background: #2d0f0f; transform: translateY(-1px); }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <a href="/">← Back to Home</a>
+      <div class="provider-badge">Provider: {{PROVIDER}}</div>
+    </div>
+
+    <!-- Hero Card -->
+    <div class="hero-card">
+      <div class="avatar" id="avatar-initials">?</div>
+      <div class="user-info">
+        <h1 id="display-name">{{USERNAME}}</h1>
+        <div class="email">{{EMAIL}}</div>
+        <div class="sub">sub: {{SUB}}</div>
+      </div>
+      <div class="success-chip">✅ Authenticated<br/><small style="font-weight:400;color:#3fb95088">ID Token verified</small></div>
+    </div>
+
+    <!-- Section: JWT Header + Payload -->
+    <div class="section open" id="section-jwt">
+      <div class="section-header" onclick="toggleSection('section-jwt')">
+        <div class="section-title"><div class="dot"></div>Decoded ID Token (JWT)</div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="section-body">
+        <p style="color:#8b949e;font-size:0.82rem;margin-bottom:12px;">JWT = <span style="color:#58a6ff">Header</span> . <span style="color:#3fb950">Payload</span> . <span style="color:#d2a679">Signature</span></p>
+        <p style="color:#58a6ff;font-size:0.78rem;font-weight:600;margin-bottom:6px;">HEADER</p>
+        <pre id="jwt-header">{{JWT_HEADER}}</pre>
+        <p style="color:#3fb950;font-size:0.78rem;font-weight:600;margin:16px 0 6px;">PAYLOAD (Claims)</p>
+        <pre id="jwt-payload">{{JWT_PAYLOAD}}</pre>
+
+        <a class="jwtio-link" id="jwtio-btn" href="#" target="_blank">
+          🔎 Inspect on jwt.io
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: Raw ID Token -->
+    <div class="section" id="section-raw">
+      <div class="section-header" onclick="toggleSection('section-raw')">
+        <div class="section-title"><div class="dot" style="background:#d2a679"></div>Raw ID Token</div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="token-wrap">
+          <div class="token-raw" id="raw-token">{{RAW_ID_TOKEN}}</div>
+          <button class="copy-btn" id="copy-btn" onclick="copyToken()">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: All Claims -->
+    <div class="section" id="section-claims">
+      <div class="section-header" onclick="toggleSection('section-claims')">
+        <div class="section-title"><div class="dot" style="background:#a371f7"></div>All Claims (from ID Token)</div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="section-body">
+        <pre>{{ALL_CLAIMS}}</pre>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <a href="/" class="btn btn-primary">🏠 Home</a>
+      <a href="/logout" class="btn btn-danger">⏏ Logout</a>
+    </div>
+
+  </div>
+
+  <script>
+    // Set avatar initials
+    const name = document.getElementById('display-name').textContent.trim();
+    const initials = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() || '?';
+    document.getElementById('avatar-initials').textContent = initials;
+
+    // Set jwt.io link using raw token
+    const rawToken = document.getElementById('raw-token').textContent.trim();
+    if (rawToken && rawToken !== 'undefined') {
+      document.getElementById('jwtio-btn').href = 'https://jwt.io/#debugger-io?token=' + encodeURIComponent(rawToken);
+    }
+
+    // Toggle collapsible sections
+    function toggleSection(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+
+    // Copy raw token to clipboard
+    function copyToken() {
+      const token = document.getElementById('raw-token').textContent.trim();
+      navigator.clipboard.writeText(token).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>
