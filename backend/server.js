@@ -94,7 +94,7 @@ app.get("/login", async (req, res) => {
     }
 });
 
-// Callback — exchange code for tokens, store claims in session
+// Callback - exchange code for tokens, store claims in session
 app.get("/callback", async (req, res) => {
     try {
         const client = await getOidcClient();
@@ -133,7 +133,7 @@ app.get("/callback", async (req, res) => {
         console.error("[CALLBACK] Error:", err.message);
         res.status(500).send(`
       <html><body>
-        <h2>❌ Callback Error</h2>
+        <h2> Callback Error</h2>
         <pre>${err.message}</pre>
         <a href="/">← Back to Home</a>
       </body></html>
@@ -141,7 +141,7 @@ app.get("/callback", async (req, res) => {
     }
 });
 
-// Profile — display parsed JWT claims
+// Profile - display parsed JWT claims
 app.get("/profile", (req, res) => {
     if (!req.session.userClaims) {
         return res.redirect("/");
@@ -150,7 +150,7 @@ app.get("/profile", (req, res) => {
     const claims = req.session.userClaims;
     const idToken = req.session.idToken || "";
 
-    // Decode JWT parts (header + payload) for display
+    // Decode JWT parts
     let jwtHeader = {};
     let jwtPayload = {};
     try {
@@ -174,18 +174,18 @@ app.get("/profile", (req, res) => {
     res.send(html);
 });
 
-// Logout — clear session
+// Logout - clear session
 app.get("/logout", (req, res) => {
     req.session.destroy(() => {
         res.redirect("/");
     });
 });
 
-// ─── Start Server ─────────────────────────────────────────────────────────────
+// Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`\n🚀 App running at http://localhost:${PORT}`);
-    console.log(`   Provider: ${process.env.PROVIDER || "(not set)"}`);
-    console.log(`   Issuer:   ${process.env.ISSUER_BASE_URL || "(not set)"}`);
-    console.log(`   Client:   ${process.env.CLIENT_ID || "(not set)"}\n`);
+    console.log(`\n App running at http://localhost:${PORT}`);
+    console.log(`Provider: ${process.env.PROVIDER || "(not set)"}`);
+    console.log(`Issuer:   ${process.env.ISSUER_BASE_URL || "(not set)"}`);
+    console.log(`Client:   ${process.env.CLIENT_ID || "(not set)"}\n`);
 });
