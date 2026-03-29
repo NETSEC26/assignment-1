@@ -1,0 +1,14 @@
+dn: uid=testuser,dc=assignment,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: testuser
+sn: Student
+givenName: Test
+cn: Test User
+mail: testuser@mail.com
+userPassword: password123
+loginShell: /bin/bash
+uidNumber: 1001
+gidNumber: 1001
+homeDirectory: /home/testuser

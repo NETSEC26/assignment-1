@@ -5,172 +5,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OIDC Demo — Home</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0d1117;
-      color: #e6edf3;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 16px;
-      padding: 48px 56px;
-      max-width: 480px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-    }
-
-    .badge {
-      display: inline-block;
-      background: linear-gradient(135deg, #1a3a6b, #0077ff33);
-      border: 1px solid #0077ff66;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #58a6ff;
-      padding: 4px 14px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #e6edf3, #58a6ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 12px;
-    }
-
-    .subtitle {
-      color: #8b949e;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      margin-bottom: 36px;
-    }
-
-    .btn-login {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, #0077ff, #0055cc);
-      color: #fff;
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      padding: 14px 32px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-      box-shadow: 0 4px 20px rgba(0,119,255,0.35);
-    }
-
-    .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,119,255,0.5);
-      filter: brightness(1.1);
-    }
-
-    .btn-login:active {
-      transform: translateY(0);
-    }
-
-    .btn-login svg {
-      width: 20px; height: 20px;
-      fill: currentColor;
-    }
-
-    .providers {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 32px;
-      flex-wrap: wrap;
-    }
-
-    .provider-chip {
-      background: #21262d;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      padding: 6px 14px;
-      font-size: 12px;
-      color: #8b949e;
-    }
-
-    .provider-chip span { color: #3fb950; margin-right: 4px; }
-
-    .logged-in-notice {
-      background: #0d2b0d;
-      border: 1px solid #3fb95055;
-      border-radius: 10px;
-      padding: 12px 20px;
-      color: #3fb950;
-      font-size: 0.9rem;
-      margin-bottom: 24px;
-    }
-
-    .logged-in-notice a {
-      color: #58a6ff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .logged-in-notice a:hover { text-decoration: underline; }
-
-    .divider {
-      border: none;
-      border-top: 1px solid #21262d;
-      margin: 32px 0;
-    }
-
-    footer {
-      color: #484f58;
-      font-size: 0.78rem;
-      margin-top: 24px;
-    }
-  </style>
 </head>
 
 <body>
-  <div class="card">
-    <div class="badge">🔐 OIDC Demo App</div>
-    <h1>Welcome</h1>
-    <p class="subtitle">
-      A minimalist OIDC Relying Party demo.<br/>
-      Authenticate via <strong>Ory Hydra</strong> or <strong>Keycloak</strong>.
-    </p>
+  <h1>OIDC Demo App</h1>
+  <p>Authenticate via <strong>Ory Hydra</strong></p>
 
-    {{LOGIN_STATE}}
+  {{LOGIN_STATE}}
 
-    <a href="/login" class="btn-login" id="btn-login">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 14.2a7.2 7.2 0 0 1-6-3.22c.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08a7.2 7.2 0 0 1-6 3.22z"/></svg>
-      Login with OIDC Provider
-    </a>
+  <a href="/login" id="btn-login">Login with Ory Hydra</a>
 
-    <hr class="divider" />
-
-    <div class="providers">
-      <div class="provider-chip"><span>●</span> Ory Hydra :4444</div>
-      <div class="provider-chip"><span>●</span> Keycloak :8080</div>
-    </div>
-
-    <footer>Network Security · Assignment 1 · OIDC Lab</footer>
-  </div>
+  <hr />
 </body>
 
 </html>
