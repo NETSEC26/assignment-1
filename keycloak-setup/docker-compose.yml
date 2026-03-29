@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    environment:
+      - LDAP_ORGANISATION=Lab Netsec
+      - LDAP_DOMAIN=lab.netsec
+      - LDAP_ADMIN_PASSWORD=root
+    ports:
+      - "389:389"
+    networks:
+      - lab-network
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: phpldapadmin
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=openldap
+      - PHPLDAPADMIN_HTTPS=false
+    ports:
+      - "8081:80"
+    depends_on:
+      - openldap
+    networks:
+      - lab-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+    command: start-dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - openldap
+    networks:
+      - lab-network
+
+networks:
+  lab-network:
+    driver: bridge
