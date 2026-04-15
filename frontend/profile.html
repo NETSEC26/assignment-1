@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OIDC Demo — Profile</title>
+</head>
+
+<body>
+    <h1>Profile</h1>
+    <p><a href="/">← Back to Home</a> | Provider: <strong>{{PROVIDER}}</strong></p>
+
+    <hr />
+
+    <h2>User Info</h2>
+    <ul>
+        <li><strong>Name:</strong> {{USERNAME}}</li>
+        <li><strong>Email:</strong> {{EMAIL}}</li>
+        <li><strong>Subject (sub):</strong> {{SUB}}</li>
+        <li><strong>Issuer (iss):</strong> {{ISSUER}}</li>
+    </ul>
+
+    <hr />
+
+    <h2>Decoded ID Token (JWT)</h2>
+    <h3>Header</h3>
+    <pre>{{JWT_HEADER}}</pre>
+
+    <h3>Payload (Claims)</h3>
+    <pre>{{JWT_PAYLOAD}}</pre>
+
+    <p>
+        <a id="jwtio-btn" href="#" target="_blank">🔎 Inspect on jwt.io</a>
+    </p>
+
+    <hr />
+
+    <h2>Raw ID Token</h2>
+    <pre id="raw-token">{{RAW_ID_TOKEN}}</pre>
+
+    <hr />
+
+    <h2>All Claims (JSON)</h2>
+    <pre>{{ALL_CLAIMS}}</pre>
+
+    <hr />
+    <a href="/">Home</a> | <a href="/logout">Logout</a>
+
+    <script>
+        const rawToken = document.getElementById('raw-token').textContent.trim();
+        if (rawToken) {
+            document.getElementById('jwtio-btn').href =
+                'https://jwt.io/#debugger-io?token=' + encodeURIComponent(rawToken);
+        }
+    </script>
+</body>
+
+</html>
